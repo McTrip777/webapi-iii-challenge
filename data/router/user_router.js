@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Users = require('./helpers/userDb.js');
+const Users = require('../helpers/userDb.js');
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', middleware, async (req, res) => {
     try {
         const user = await Users.getById(req.params.id);
 
@@ -47,7 +47,7 @@ router.get('/:id/post', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/',middleware, async (req, res) => {
     try {
         const user = await Users.insert(req.body);
             res.status(201).json(user);
@@ -76,7 +76,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',middleware, async (req, res) => {
     try {
         const user = await Users.update(req.params.id, req.body);
         if (user) {
@@ -93,5 +93,14 @@ router.put('/:id', async (req, res) => {
       }
 });
 
+function middleware(req, res ,next) {
+    const uppercase = req.body.name[0].toUpperCase() + req.body.name.slice(1);
+    console.log(uppercase)
+    if (req.body.name == uppercase) {
+        next();
+    } else {
+        res.status(400).json({message:'That didn\'t work'})
+    }
+}
 
 module.exports = router;
