@@ -34,7 +34,18 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
+router.get('/:id/post', async (req, res) => {
+    try {
+        const post = await Users.getUserPosts(req.params.id);
+        if(post){
+            res.status(200).json(post)
+        }else{
+            res.status(404).json({message: 'User post not found'})
+        }
+    } catch (error) {
+        
+    }
+})
 
 router.post('/', async (req, res) => {
     try {
