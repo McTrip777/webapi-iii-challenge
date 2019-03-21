@@ -8,7 +8,12 @@ const server = express();
 server.use(express.json());
 
 server.get('/', ( req, res ) => {
-    res.send('<h2>Welcome to my page!!!</h2>')
+    try {
+        res.status(200).json({ greeting: process.env.GREETING });
+      } catch (error) {
+        console.error('\nERROR', error);
+        res.status(500).json({ error: 'Cannot retrieve the shoutouts' });
+      }
 })
 
 server.use('/api/users', userRouter);
